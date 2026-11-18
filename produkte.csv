@@ -1,0 +1,29 @@
+Produkt;Kategorie;dm_Preis;dm_Menge_g;dm_Url;ross_Preis;ross_Menge_g;ross_Url
+Haferflocken Feinblatt;Frühstück;0.85;500;https://www.dm.de/dmbio-haferflocken-feinblatt-p4058172312678.html;0.85;500;https://www.rossmann.de/de/lebensmittel-enerbio-haferflocken-feinblatt/p/4305615694553
+Haferflocken Kernig;Frühstück;0.85;500;https://www.dm.de/dmbio-haferflocken-kernig-p4058172312661.html;0.85;500;https://www.rossmann.de/de/lebensmittel-enerbio-haferflocken-kernig/p/4305615694560
+Porridge Basis;Frühstück;1.95;500;;1.99;500;
+Chiasamen;Frühstück;2.75;300;;2.99;300;
+Leinsamen Geschrotet;Frühstück;1.35;300;;1.39;300;
+Passierte Tomaten;Konserven;0.95;500;https://www.dm.de/dmbio-passierte-tomaten-p4058172314542.html;0.99;500;https://www.rossmann.de/de/lebensmittel-enerbio-passierte-tomaten/p/4305615783516
+Tomatenmark;Konserven;0.95;200;;0.99;200;
+Kichererbsen (Glas/Dose);Konserven;0.95;240;;0.99;240;
+Kidneybohnen;Konserven;0.95;255;;0.99;255;
+Mais;Konserven;1.15;285;;1.19;285;
+Kokosmilch (60% Kokos);Asiatisch;1.45;400;;1.49;400;
+Sojasauce Shoyu;Asiatisch;2.45;250;;2.49;250;
+Cashewkerne Natur;Nüsse & Snacks;3.45;200;;3.29;200;
+Mandeln Braun;Nüsse & Snacks;2.95;200;;2.99;200;
+Walnusskerne;Nüsse & Snacks;3.45;200;;3.49;200;
+Datteln Entsteint;Nüsse & Snacks;1.95;200;;1.99;200;
+Agavendicksaft;Süßungsmittel;2.95;250;;2.99;250;
+Ahornsirup Grad A;Süßungsmittel;4.95;250;;4.99;250;
+Rote Linsen;Hülsenfrüchte;1.95;500;;;;
+Belugalinsen;Hülsenfrüchte;2.45;500;;2.49;500;
+Tahin (Sesammus);Aufstriche;;;;3.79;250;
+Erdnussmus Crunchy;Aufstriche;2.75;250;;2.79;250;
+Mandelmus Braun;Aufstriche;6.95;250;;6.99;250;
+Haferdrink Natur;Getränke;0.95;1000;;0.95;1000;
+Haferdrink Barista;Getränke;1.35;1000;;1.39;1000;
+Sojadrink Natur;Getränke;0.95;1000;;0.99;1000;
+Olivenöl Nativ Extra;Öle & Essig;6.95;500;;6.99;500;
+Apfelessig Naturtrüb;Öle & Essig;1.45;750;;1.49;750;
