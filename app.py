@@ -33,7 +33,7 @@ def lade_daten():
 try:
     df = lade_daten()
 except Exception as e:
-    st.error(f"Fehler beim Laden der produktliste: {e}")
+    st.error(f"Fehler beim Laden der Produktliste: {e}")
     st.stop()
 
 # --- BERECHNUNGEN ---
@@ -83,8 +83,8 @@ if nur_beide:
 # --- ANZEIGE DER TABELLE ---
 anzeige_df = df[[
     "Produkt", "Kategorie", 
-    "dm_Preis", "dm (Rabatt)", "dm (pro 100g/ml)",
-    "ross_Preis", "Rossmann (Rabatt)", "Rossmann (pro 100g/ml)",
+    "dm_Preis", "dm (Rabatt)", "dm (pro 100g/ml)", "dm_Url",
+    "ross_Preis", "Rossmann (Rabatt)", "Rossmann (pro 100g/ml)", "ross_Url",
     "Günstiger"
 ]].rename(columns={
     "dm_Preis": "dm Normal (€)",
@@ -92,14 +92,17 @@ anzeige_df = df[[
 })
 
 st.dataframe(
-    anzeige_df.style.format({
-        "dm Normal (€)": "{:.2f} €",
-        "dm (Rabatt)": "{:.2f} €",
-        "dm (pro 100g/ml)": "{:.2f} €",
-        "Rossmann Normal (€)": "{:.2f} €",
-        "Rossmann (Rabatt)": "{:.2f} €",
-        "Rossmann (pro 100g/ml)": "{:.2f} €",
-    }, na_rep="-"),
+    anzeige_df,
+    column_config={
+        "dm Normal (€)": st.column_config.NumberColumn(format="%.2f €"),
+        "dm (Rabatt)": st.column_config.NumberColumn(format="%.2f €"),
+        "dm (pro 100g/ml)": st.column_config.NumberColumn(format="%.2f €"),
+        "dm_Url": st.column_config.LinkColumn("dm Link", display_text="🔗 dm ansehen"),
+        "Rossmann Normal (€)": st.column_config.NumberColumn(format="%.2f €"),
+        "Rossmann (Rabatt)": st.column_config.NumberColumn(format="%.2f €"),
+        "Rossmann (pro 100g/ml)": st.column_config.NumberColumn(format="%.2f €"),
+        "ross_Url": st.column_config.LinkColumn("Rossmann Link", display_text="🔗 Rossmann ansehen"),
+    },
     use_container_width=True,
     hide_index=True
 )
