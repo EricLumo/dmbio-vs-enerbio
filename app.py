@@ -16,7 +16,6 @@ rossmann_alles = st.sidebar.slider("Rossmann 'Auf alles' (%)", min_value=0, max_
 rossmann_ernaehrung = st.sidebar.slider("Rossmann 'Ernährung' (%)", min_value=0, max_value=30, value=20, step=5)
 rossmann_kombinierbar = st.sidebar.checkbox("Rossmann Coupons kombinierbar (10% + 20% = 28%)", value=True)
 
-# Berechnung des effektiven Rossmann-Faktors
 if rossmann_kombinierbar:
     rossmann_faktor = (1 - rossmann_alles / 100) * (1 - rossmann_ernaehrung / 100)
 else:
@@ -26,31 +25,25 @@ dm_faktor = 1 - (dm_rabatt / 100)
 
 st.sidebar.info(f"**Effektiver Rabatt:**\n- dm: **{dm_rabatt}%**\n- Rossmann: **{(1 - rossmann_faktor)*100:.1f}%**")
 
-# --- BEISPIEL-DATENSATZ (Wird im nächsten Schritt durch Live-Scraper ersetzt) ---
-daten = [
-    {"Produkt": "Haferflocken Feinblatt", "Kategorie": "Frühstück", "dm_Preis": 0.85, "dm_Menge_g": 500, "ross_Preis": 0.85, "ross_Menge_g": 500},
-    {"Produkt": "Passierte Tomaten", "Kategorie": "Konserven", "dm_Preis": 0.95, "dm_Menge_g": 500, "ross_Preis": 0.99, "ross_Menge_g": 500},
-    {"Produkt": "Kokosmilch (60% Kokos)", "Kategorie": "Asiatisch", "dm_Preis": 1.45, "dm_Menge_g": 400, "ross_Preis": 1.49, "ross_Menge_g": 400},
-    {"Produkt": "Cashewkerne Natur", "Kategorie": "Nüsse & Snacks", "dm_Preis": 3.45, "dm_Menge_g": 200, "ross_Preis": 3.29, "ross_Menge_g": 200},
-    {"Produkt": "Agavendicksaft", "Kategorie": "Süßungsmittel", "dm_Preis": 2.95, "dm_Menge_g": 250, "ross_Preis": 2.99, "ross_Menge_g": 250},
-    {"Produkt": "Rote Linsen", "Kategorie": "Hülsenfrüchte", "dm_Preis": 1.95, "dm_Menge_g": 500, "ross_Preis": None, "ross_Menge_g": None},
-    {"Produkt": "Tahin (Sesammus)", "Kategorie": "Aufstriche", "dm_Preis": None, "dm_Menge_g": None, "ross_Preis": 3.79, "ross_Menge_g": 250},
-    {"Produkt": "Haferdrink Natur", "Kategorie": "Getränke", "dm_Preis": 0.95, "dm_Menge_g": 1000, "ross_Preis": 0.95, "ross_Menge_g": 1000},
-]
+# --- DATEN AUS CSV LADEN ---
+@st.cache_data(ttl=300)
+def lade_daten():
+    return pd.read_csv("produkte.csv", sep=";")
 
-df = pd.DataFrame(daten)
+try:
+    df = lade_daten()
+except Exception as e:
+    st.error(f"Fehler beim Laden der produktliste: {e}")
+    st.stop()
 
 # --- BERECHNUNGEN ---
 def berechne_vergleich(row):
-    # Effektivpreise nach Rabatt
     dm_eff = row["dm_Preis"] * dm_faktor if pd.notnull(row["dm_Preis"]) else None
     ross_eff = row["ross_Preis"] * rossmann_faktor if pd.notnull(row["ross_Preis"]) else None
     
-    # Grundpreis pro 100g / 100ml nach Rabatt (für fairen Vergleich bei unterschiedlichen Packungsgrößen)
     dm_gp = (dm_eff / row["dm_Menge_g"] * 100) if dm_eff else None
     ross_gp = (ross_eff / row["ross_Menge_g"] * 100) if ross_eff else None
     
-    # Gewinner ermitteln
     if dm_gp and ross_gp:
         if dm_gp < ross_gp:
             diff = ((ross_gp - dm_gp) / ross_gp) * 100
@@ -72,16 +65,20 @@ def berechne_vergleich(row):
 df[["dm (Rabatt)", "Rossmann (Rabatt)", "dm (pro 100g/ml)", "Rossmann (pro 100g/ml)", "Günstiger"]] = df.apply(berechne_vergleich, axis=1)
 
 # --- FILTER & SUCHE ---
-col1, col2 = st.columns([2, 1])
+col1, col2, col3 = st.columns([2, 1, 1])
 with col1:
     suche = st.text_input("🔍 Produkt suchen...", "")
 with col2:
-    kategorie = st.selectbox("Kategorie filtern", ["Alle"] + list(df["Kategorie"].unique()))
+    kategorie = st.selectbox("Kategorie", ["Alle"] + sorted(list(df["Kategorie"].dropna().unique())))
+with col3:
+    nur_beide = st.checkbox("Nur bei beiden verfügbar", value=False)
 
 if suche:
     df = df[df["Produkt"].str.contains(suche, case=False, na=False)]
 if kategorie != "Alle":
     df = df[df["Kategorie"] == kategorie]
+if nur_beide:
+    df = df[df["dm_Preis"].notnull() & df["ross_Preis"].notnull()]
 
 # --- ANZEIGE DER TABELLE ---
 anzeige_df = df[[
@@ -107,4 +104,5 @@ st.dataframe(
     hide_index=True
 )
 
-st.caption("Hinweis: Aktuell nutzt der Prototyp Beispieldaten. Der automatische Sortiments-Abruf wird als nächstes integriert.")
+st.markdown("---")
+st.markdown("💡 **Fehlt ein Produkt oder stimmt ein Preis nicht?** Du kannst die Produktliste direkt auf [GitHub bearbeiten](https://github.com/EricLumo/dmbio-vs-enerbio/blob/main/produkte.csv)!")
